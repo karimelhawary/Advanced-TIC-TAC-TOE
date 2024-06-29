@@ -1,0 +1,27 @@
+# Qt build directories
+build-*
+
+# Qt Creator user files
+*.pro.user
+*.qmake.stash
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Qt Creator specific files
+.qmake.stash
+.qmake.cache
+
+# Generated moc and ui files
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# Backup files
+*~

@@ -1,0 +1,93 @@
+name: Grid Masters
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.2.2
+        host: linux
+        target: desktop
+
+    - name: Install SQLite
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y sqlite3
+
+    - name: Set up SQLite database
+      run: |
+        sqlite3 tictactoe.db <<EOF
+        CREATE TABLE IF NOT EXISTS Moves (
+            game_id INTEGER,
+            move_1 INTEGER NOT NULL,
+            move_2 INTEGER,
+            move_3 INTEGER,
+            move_4 INTEGER,
+            move_5 INTEGER,
+            move_6 INTEGER,
+            move_7 INTEGER,
+            move_8 INTEGER,
+            move_9 INTEGER
+        );
+        CREATE TABLE IF NOT EXISTS Games_data (
+            game_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username1 TEXT,
+            username2 TEXT,
+            username_winner TEXT
+        );
+        CREATE TABLE IF NOT EXISTS Players_Data (
+            player_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            mail TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            password TEXT,
+            year INTEGER,
+            month INTEGER,
+            day INTEGER,
+            win_number INTEGER,
+            lose_number INTEGER,
+            draw_number INTEGER
+        );
+        EOF
+
+    - name: Build application
+      run: |
+        cd build
+        qmake ..
+        make VERBOSE=1
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.2.2
+        host: linux
+        target: desktop
+
+    - name: Build tests
+      run: |
+        cd tests
+        mkdir -p build
+        cd build
+        qmake ../Tic-Tac-Toe_tests.pro
+        make
+
